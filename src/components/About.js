@@ -1,6 +1,14 @@
-import React from 'react';
+import React, {  useEffect } from 'react';
 
 function About() {
+    useEffect(() => {
+        console.log('About page rendered');
+        document.body.style.backgroundColor = 'lightblue';
+        return () => {
+            document.body.style.backgroundColor = ''; 
+        };
+        }, []);
+    
     return (
         <div style={{padding: '1rem'}}>
             <h2>About This Virtual Chatbot</h2>

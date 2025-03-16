@@ -1,5 +1,5 @@
 import './ChatbotBody.css';
-import React, { useState } from 'react';
+import React,{useEffect, useState} from 'react';
 
 
 
@@ -31,17 +31,51 @@ function ChatbotBody(){
         const updatedMessages = messages.filter((_, index)=> index !== indexToRemove);
         setMessages(updatedMessages);
       }
-      function handleSendMessage(){
-        if(!message.trim()){
-            alert("please enter a message");
-            return;
+      async function handleSendMessage() {
+        if (!message.trim()) {
+          return;
         }
-        const newChatMessage = { text: message, user: username, date: date, time: time};
-        setMessages([...messages,newChatMessage]);
-        console.log("New chat message:", newChatMessage);
-            setMessage('');
+        const newChatMessage = {
+          text: message,
+          user: username || 'Guest',
+          timestamp: new Date().toLocaleString(),
+          date: date,
+          time: time,
+        };
+        setMessages([...messages, newChatMessage]);
+        setMessage('');
+    
+        try {
+          console.log('Sending message to backend:', message);
+          const response = await fetch('http://localhost:3001/api/chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: message }),
+          });
+          const data = await response.json();
+          console.log('Response from backend:', data);
+          const botMessage = {
+            text: data.reply,
+            user:'Chatbot',
+            timestamp: new Date().toLocaleString()
+          };
+          setMessages(prevMessages=>[...prevMessages,botMessage]);
+        } catch (error) {
+          console.error('Error sending message to API:', error);
+          const errorMessage={
+            text:'Sorry, there was an error communicating with the chatbot. Please try again.',
+            user:'System',
+            timestamp: new Date().toLocaleString()
 
-    }  
+          };
+          setMessages(prevMessages=>[...prevMessages,errorMessage]);
+
+        }
+      }
+      
+
     return(
         <main>
             <h2>Chat with your Virtual Assistant</h2>
@@ -55,12 +89,7 @@ function ChatbotBody(){
                     placeholder="Enter your name" />
                 </label>
                 <br /><br />
-                <label>
-                    Message:
-                    <textarea name="message" placeholder="Start chatting here .."></textarea>
-
-                </label>
-                <br /><br />
+                
                 <label>
                     Date&time:
                     <input type="date"

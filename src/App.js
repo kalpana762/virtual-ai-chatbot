@@ -7,6 +7,10 @@ import About from './components/About';
 import Contact from './components/Contact';
 import Profile from './components/Profile';
 import ChatHistory from './components/ChatHistory';
+import FetchDemo from './components/FetchDemo';
+import FetchDemoAsync from './components/FetchDemoAsync';
+
+
 import './App.css'
 
 function App() {
@@ -19,6 +23,10 @@ function App() {
       <Route path='/contact' element={<Contact />} />
       <Route path='/profile' element={<Profile />} />
       <Route path='/chat-history' element={<ChatHistory />} />
+      <Route path='/fetch-demo' element={<FetchDemo />} />
+      <Route path='/fetching-demo' element={<FetchDemoAsync />} />
+
+
 
     </Routes>
     <Footer />
